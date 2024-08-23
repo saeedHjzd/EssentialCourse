@@ -10,10 +10,12 @@ import XCTest
 class RemoteFeedLoader {
     let client: HTTPClient
     let url: URL
+    
     init(url: URL, client: HTTPClient) {
         self.url = url
         self.client = client
     }
+    
     func load() {
         client.get(from: url)
     }
@@ -23,35 +25,41 @@ protocol HTTPClient {
     func get(from url: URL)
 }
 
-class HTTPClientSpy: HTTPClient {
-    func get(from url: URL) {
-        requestedURL = url
-    }
-    
-    var requestedURL: URL?
-}
-
 class RemoteFeedLoaderTests: XCTestCase {
     
     func test_init_doesNotRequestDataFromURL() {
-        let client = HTTPClientSpy()
-        let url = URL(string: "https://a-url.com")!
-        _ = RemoteFeedLoader(url: url, client: client)
+        let (_, client) = makeSUT()
                 
         XCTAssertNil(client.requestedURL)
     }
     
     func test_load_requestDataFromURL() {
-        // MARK: - Arrange e.g. Given a client and sut
+        // MARK: Arrange e.g. Given a client and sut
         let url = URL(string: "https://a-given-url.com")!
-        let client = HTTPClientSpy()
-        let sut = RemoteFeedLoader(url: url, client: client)
+        let (sut, client) = makeSUT(url: url)
         
-        // MARK: - Act e.g. When we invoke sut.load()
+        // MARK: Act e.g. When we invoke sut.load()
         sut.load()
         
-        // MARK: - Assert e.g. Then assert that a URL request was initiated in the client
+        // MARK: Assert e.g. Then assert that a URL request was initiated in the client
         XCTAssertEqual(client.requestedURL, url)
+    }
+    
+    
+    // MARK: - Helpers
+    
+    private func makeSUT(url: URL = URL(string: "https://a-url.com")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
+        let client = HTTPClientSpy()
+        let sut = RemoteFeedLoader(url: url, client: client)
+        return (sut, client)
+    }
+    
+    private class HTTPClientSpy: HTTPClient {
+        var requestedURL: URL?
+        
+        func get(from url: URL) {
+            requestedURL = url
+        }
     }
     
 }
