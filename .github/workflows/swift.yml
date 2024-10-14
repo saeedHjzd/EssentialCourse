@@ -16,4 +16,4 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: fastlane run_CI_tests
+      - run: fastlane mac run_CI_tests
