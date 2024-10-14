@@ -15,5 +15,11 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - run: fastlane mac run_CI_tests
+    - name: Check Xcode version
+        run: xcodebuild -version
+      - name: runnerImage
+        value: 'macOS-14'
+    - name: XcodeVersion
+        value: 'Xcode_15.4.app'
+        - uses: actions/checkout@v4
+        - run: fastlane mac run_CI_tests
