@@ -15,8 +15,5 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: swift build -v
-    - name: Run tests
-      run: xcodebuild clean build test -scheme "CI" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+      - uses: actions/checkout@v4
+      - run: fastlane run_CI_tests
